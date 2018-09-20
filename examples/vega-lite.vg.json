@@ -1,0 +1,1 @@
+{"config":{"view":{"width":600,"height":400}},"description":"number of primes","data":{"url":"primes.csv","format":{"type":"csv"}},"mark":"line","encoding":{"x":{"field":"n","type":"quantitative"},"y":{"field":"primes","type":"quantitative"}}}

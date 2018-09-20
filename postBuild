@@ -1,8 +1,4 @@
 #!/bin/bash
-pwd
-ls
-pip install -e  ./jupyter-ifort-kernel
-cd jupyter-ifort-kernel
-ls
-jupyter kernelspec install ./ifort_spec --user
+pip install -e ./jupyter-ifort-kernel
+jupyter kernelspec install ./jupyter-ifort-kernel/ifort_spec --user
 
