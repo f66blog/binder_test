@@ -1,6 +1,5 @@
 # binder_test
 test binder 
-<<<<<<< HEAD
 
 # references
 
