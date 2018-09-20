@@ -11,7 +11,8 @@ Jupyter Fortran kernel (Matplotlib ready)
 - matplotlib.pyplot as plt, numpy as np (%fig:)
 - display images (%image: fn1 fn2 ..)
 
-## binder  Jupyter lab
+## binder  Jupyter lab [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/f66blog/binder_test/master?filepath=examples%2Fexample.ipynb)
+
 Launch Jupyter-ifort-kernel.    
 
 - [jupyter notebook](https://mybinder.org/v2/gh/f66blog/binder_test/master?filepath=examples%2Fexample.ipynb)
