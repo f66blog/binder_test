@@ -1,4 +1,6 @@
 dependencies:
   - matplotlib
   - numpy
+  - pandas
+  - pillow  
   - pip
