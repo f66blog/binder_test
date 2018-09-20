@@ -12,13 +12,14 @@ Jupyter Fortran kernel (Matplotlib ready)
 - display images (%image: fn1 fn2 ..)
 
 ## binder  Jupyter lab
+Launch Jupyter-ifort-kernel.    
 
-- [jupyter noteboo](https://mybinder.org/v2/gh/f66blog/binder_test/master?filepath=examples%2Fexample.ipynb)
+- [jupyter notebook](https://mybinder.org/v2/gh/f66blog/binder_test/master?filepath=examples%2Fexample.ipynb)
 
-- [jupyter lab](https://mybinder.org/v2/gh/f66blog/binder_test/master?urlpath=lab/examples/example.ipynb)
+- [jupyter lab](https://mybinder.org/v2/gh/f66blog/binder_test/master?urlpath=lab)
 
 # references
-
+ 
 [I Python, You R, We Julia](https://blog.jupyter.org/i-python-you-r-we-julia-baf064ca1fb6)
 
 [Fortran kernel for Jupyter with Coarray support](https://github.com/sourceryinstitute/jupyter-CAF-kernel) 
