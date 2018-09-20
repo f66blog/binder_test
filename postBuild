@@ -1,6 +1,8 @@
 #!/bin/bash
 pwd
 ls
-sudo pip install -e --user  jupyter-ifort-kernel
+pip install -e --user  ./jupyter-ifort-kernel
 cd jupyter-ifort-kernel
-sudo jupyter kernelspec install ifort_spec
+ls
+jupyter kernelspec install ifort_spec
+
