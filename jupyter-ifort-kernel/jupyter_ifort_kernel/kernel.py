@@ -251,7 +251,9 @@ class ifortKernel(Kernel):
         elif magics['writefile'] != []:
             self._write_to_stderr("write to file:")
             self._write_to_stderr(magics['writefile'][0])
-            with open(magics['writefile'][0], 'w') as write_file:
+            
+            mode = 'a' if  magics['writefile'][1] == '-a' else 'w'
+            with open(magics['writefile'][0], mode) as write_file:
                 for line in code.splitlines():
                     if line.startswith(('%writefile')):
                          continue
