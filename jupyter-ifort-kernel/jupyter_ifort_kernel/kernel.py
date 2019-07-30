@@ -258,7 +258,7 @@ class ifortKernel(Kernel):
                 self._write_to_stderr('write to file:')
             self._write_to_stderr(magics['writefile'][0])
 
-            with open(magics['writefile'][0], mode) as write_file:
+            with open(magics['writefile'][0], mode, encoding='UTF-8') as write_file:
                 for line in code.splitlines():
                     if line.startswith(('%writefile', '%%writefile')):
                          continue
