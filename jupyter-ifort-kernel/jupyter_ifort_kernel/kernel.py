@@ -1,4 +1,4 @@
-from queue import Queue/gfort
+from queue import Queue
 from threading import Thread
 
 from ipykernel.kernelbase import Kernel
@@ -145,7 +145,8 @@ class ifortKernel(Kernel):
                   'fig_arg': [],
                   'image': [],
                   'py': [],
-                  'writefile': [],}
+                  'writefile': [],
+                 }
         
         for line in code.splitlines():
             if line.strip().startswith('%'):
