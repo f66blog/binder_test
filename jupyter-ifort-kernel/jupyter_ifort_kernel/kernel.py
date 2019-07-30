@@ -68,7 +68,7 @@ class RealTimeSubprocess(subprocess.Popen):
 
 
 class ifortKernel(Kernel):
-    implementation = 'jupyter_ifort_kernel'
+    implementation = 'jupyter_fortran_kernel'
     implementation_version = '0.1'
     language = 'Fortran'
     language_version = 'F2008'
@@ -249,20 +249,25 @@ class ifortKernel(Kernel):
                     'user_expressions': {}}
         
         elif magics['writefile'] != []:
-            self._write_to_stderr("write to file:")
+            if len(magics['writefile']) > 1:
+                if magics['writefile'][1] == '-a':
+                    mode = 'a'
+                    self._write_to_stderr('append to file:')
+            else:
+                mode = 'w'
+                self._write_to_stderr('write to file:')
             self._write_to_stderr(magics['writefile'][0])
-            
-            mode = 'a' if  magics['writefile'][1] == '-a' else 'w'
+
             with open(magics['writefile'][0], mode) as write_file:
                 for line in code.splitlines():
-                    if line.startswith(('%writefile')):
+                    if line.startswith(('%writefile', '%%writefile')):
                          continue
                     write_file.write(line + '\n')
                 write_file.flush()
 
-
             return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                     'user_expressions': {}}
+
 
         else:
             tmpdir = self.master_path

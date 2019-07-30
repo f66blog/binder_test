@@ -18,9 +18,9 @@ Shamelessly hacked together from ...
   * pip
 
 ### Step-by-step:
- * `pip install -e --user jupyter-ifort-kernel`
+ * `pip install --user jupyter-ifort-kernel`
  * `cd jupyter-ifort-kernel`
- * `jupyter-kernelspec install ifort_spec`
+ * `jupyter kernelspec install ifort_spec`
  * `jupyter notebook` or `jupyter lab`
 
 ### Example notebook
