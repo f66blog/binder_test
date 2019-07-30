@@ -1,4 +1,4 @@
-from queue import Queue
+from queue import Queue/gfort
 from threading import Thread
 
 from ipykernel.kernelbase import Kernel
@@ -68,14 +68,14 @@ class RealTimeSubprocess(subprocess.Popen):
 
 
 class ifortKernel(Kernel):
-    implementation = 'jupyter_ifort_kernel'
+    implementation = 'jupyter_fortran_kernel'
     implementation_version = '0.1'
     language = 'Fortran'
     language_version = 'F2008'
     language_info = {'name': 'fortran',
                      'mimetype': 'text/plain',
                      'file_extension': 'f90'}
-    banner = "ifort kernel.\n" \
+    banner = "fortran kernel.\n" \
              "Uses intel fortran, compiles in F2008, and creates source code files and executables in temporary folder.\n"
 
     def __init__(self, *args, **kwargs):
@@ -144,14 +144,15 @@ class ifortKernel(Kernel):
                   'fig': False,
                   'fig_arg': [],
                   'image': [],
-                 }
+                  'py': [],
+                  'writefile': [],}
         
         for line in code.splitlines():
             if line.strip().startswith('%'):
                 key, value = line.strip().strip('%').split(":", 1)
                 key = key.lower()
              
-                if key in ['ldflags', 'fcflags', 'args']:
+                if key in ['ldflags', 'fcflags', 'args', 'writefile']:
                     magics[key] = shsplit(value)
                 elif key in ['module']:  
                     magics[key] = shsplit(value)
@@ -164,6 +165,8 @@ class ifortKernel(Kernel):
                     magics['fig_arg'] = value
                 elif key in ['image']:  
                     magics[key] = shsplit(value)
+                elif key in ['py']:  
+                    magics[key] = True
                 else:
                     pass # need to add exception handling
         return magics
@@ -190,15 +193,40 @@ class ifortKernel(Kernel):
                     elif line.strip().startswith(('_fig')):
                         _, rhs = line.strip().strip('%').split("=", 1)
                         _fig = eval(rhs)
+                    elif line.strip() == 'print':
+                        self._write_to_stdout('\n')    
+                    elif line.strip().startswith(('print')):
+                        _, rhs = line.strip().strip('%').split("t ", 1)
+                        self._write_to_stdout(str(eval(rhs)) + '\n')    
                     else:
                         exec(line)
+
                 _imgdata = BytesIO()
                 _fig.savefig(_imgdata, format='png')
                 _imgdata.seek(0)
                 _data = {'image/png': b64encode(_imgdata.getvalue()).decode('ascii')}
                 self.send_response(self.iopub_socket, 'display_data', {'data':_data, 'metadata':{}})
             except Exception as e:
-                self._write_to_stderr("[ifort kernel]{}".format(e))
+                self._write_to_stderr("[fortran kernel]{}".format(e))
+            finally:
+                return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
+                    'user_expressions': {}}
+
+        elif magics['py']:
+            try: 
+                for line in code.splitlines():
+                    if line.startswith(('%', '%%', '$', '?')):
+                        continue
+                    elif line.strip() == 'print':
+                        self._write_to_stdout('\n')    
+                    elif line.strip().startswith(('print')):
+                        _, rhs = line.strip().strip('%').split("t ", 1)
+                        self._write_to_stdout(str(eval(rhs)) + '\n')
+                    else:
+                        exec(line)
+
+            except Exception as e:
+                self._write_to_stderr("[fortran kernel]{}".format(e))
             finally:
                 return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                     'user_expressions': {}}
@@ -218,6 +246,21 @@ class ifortKernel(Kernel):
                     self.send_response(self.iopub_socket, 'display_data',{'data':data,'metadata':{}})
             return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                     'user_expressions': {}}
+        
+        elif magics['writefile'] != []:
+            self._write_to_stderr("write to file:")
+            self._write_to_stderr(magics['writefile'][0])
+            with open(magics['writefile'][0], 'w') as write_file:
+                for line in code.splitlines():
+                    if line.startswith(('%writefile')):
+                         continue
+                    write_file.write(line + '\n')
+                write_file.flush()
+
+
+            return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
+                    'user_expressions': {}}
+
         else:
             tmpdir = self.master_path
             with self.new_temp_file(suffix=magics['compiler'][1], dir=tmpdir) as source_file:
@@ -239,7 +282,7 @@ class ifortKernel(Kernel):
                     p.write_contents()
                     if p.returncode != 0:  # Compilation failed
                         self._write_to_stdout(
-                            "[ifort kernel] fortran exited with code {}, the executable will not be executed".format(
+                            "[fortran kernel] fortran exited with code {}, the executable will not be executed".format(
                                     p.returncode))
                         return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [],
                              'user_expressions': {}}
@@ -251,7 +294,7 @@ class ifortKernel(Kernel):
 #                os.remove(src[-11:] + '.obj')                      # windows ifort
                 mod_name = tmp[0] + ".o"                           # Linux/WSL
                 copyfile(binary_file.name, mod_name)               # Linux/WSL
-                self._write_to_stderr("[ifort kernel] module objects created successfully: {}".format(mod_name))
+                self._write_to_stderr("[fortran kernel] module objects created successfully: {}".format(mod_name))
                 return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [], 'user_expressions': {}}
                 
 #            src, _ = os.path.splitext(source_file.name)            # windows ifort
@@ -266,7 +309,7 @@ class ifortKernel(Kernel):
 #            os.remove(exe_file)                                    # windows ifort               
          
         if p.returncode != 0:
-            self._write_to_stderr("[ifort kernel] Executable exited with code {}".format(p.returncode))
+            self._write_to_stderr("[fortran kernel] Executable exited with code {}".format(p.returncode))
         return {'status': 'ok', 'execution_count': self.execution_count, 'payload': [], 'user_expressions': {}}
           
     def do_shutdown(self, restart):
