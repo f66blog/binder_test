@@ -68,7 +68,7 @@ class RealTimeSubprocess(subprocess.Popen):
 
 
 class ifortKernel(Kernel):
-    implementation = 'jupyter_fortran_kernel'
+    implementation = 'jupyter_ifort_kernel'
     implementation_version = '0.1'
     language = 'Fortran'
     language_version = 'F2008'
@@ -76,7 +76,7 @@ class ifortKernel(Kernel):
                      'mimetype': 'text/plain',
                      'file_extension': 'f90'}
     banner = "fortran kernel.\n" \
-             "Uses intel fortran, compiles in F2008, and creates source code files and executables in temporary folder.\n"
+             "Uses fortran, compiles in F2008, and creates source code files and executables in temporary folder.\n"
 
     def __init__(self, *args, **kwargs):
         super(ifortKernel, self).__init__(*args, **kwargs)
