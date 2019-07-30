@@ -1,2 +1,3 @@
 apt-utils
+gfortran
 gfortran-8
